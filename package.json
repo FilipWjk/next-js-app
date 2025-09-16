@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "start": "next start"
+    "start": "next start",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "db:reset": "powershell -NoLogo -NoProfile -Command \"Remove-Item -Force -ErrorAction SilentlyContinue prisma/prisma/dev.db; $LASTEXITCODE=0; exit 0\" && prisma migrate reset --force"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -13,7 +16,8 @@
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "@prisma/client": "^5.18.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -21,6 +25,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "prisma": "^5.18.0"
   }
 }
