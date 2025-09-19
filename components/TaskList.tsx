@@ -6,6 +6,8 @@ import { Task } from '@/types/task';
 import { TaskForm } from '@/components/TaskForm';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useDragAndDrop } from '@/app/hooks/useDragAndDrop';
+import { DragAndDropService } from '@/lib/dragAndDropService';
 
 interface TaskListProps {
   tasks: Task[];
@@ -21,13 +23,17 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
   const [statusFilter, setStatusFilter] = useState<Task['status'] | 'all'>('all');
   const [priorityFilter, setPriorityFilter] = useState<Task['priority'] | 'all'>('all');
 
-  const filteredTasks = tasks.filter((task) => {
-    const s = searchTerm.toLowerCase();
-    const matchesSearch = task.title.toLowerCase().includes(s) || task.description.toLowerCase().includes(s);
-    const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
-    const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
+  // ? Use the drag and drop hook
+  const {
+    draggedTaskId,
+    dragOverColumn,
+    localTasks,
+    handleDragStart,
+    handleDragEnd,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+  } = useDragAndDrop({ tasks, onTaskUpdate });
 
   const handleEdit = (task: Task) => {
     setEditingTask(task);
@@ -43,15 +49,19 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
     setEditingTask(undefined);
   };
 
-  const handleStatusChange = async (taskId: string, status: Task['status']) => {
-    const task = tasks.find((t) => t.id === taskId);
-    if (task) await onTaskUpdate({ ...task, status, updatedAt: new Date().toISOString() });
-  };
-
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setEditingTask(undefined);
   };
+
+  const filteredTasks = localTasks.filter((task) => {
+    const search = searchTerm.toLowerCase();
+    const matchesSearch =
+      task.title.toLowerCase().includes(search) || task.description.toLowerCase().includes(search);
+    const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
+    const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
+    return matchesSearch && matchesStatus && matchesPriority;
+  });
 
   const tasksByStatus = {
     todo: filteredTasks.filter((t) => t.status === 'todo'),
@@ -101,21 +111,33 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {Object.entries(tasksByStatus).map(([status, statusTasks]) => (
           <div key={status} className="space-y-4">
-            <h2 className="text-lg font-semibold capitalize text-white">
-              {status.replace('-', ' ')} ({statusTasks.length})
-            </h2>
-            <div className="space-y-4">
+            <div className="flex items-center gap-2 p-3 bg-gray-800 rounded-lg border border-gray-700">
+              <h2 className="text-lg font-semibold capitalize text-white">{status.replace('-', ' ')}</h2>
+              <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-medium text-gray-300 bg-gray-700 rounded-full border border-gray-600">
+                {statusTasks.length}
+              </span>
+            </div>
+            <div
+              className={DragAndDropService.getDragOverClassName(dragOverColumn, status as Task['status'])}
+              onDrop={(e) => handleDrop(e, status as Task['status'])}
+              onDragOver={(e) => handleDragOver(e, status as Task['status'])}
+              onDragLeave={handleDragLeave}
+            >
               {statusTasks.map((task) => (
                 <TaskCard
                   key={task.id}
                   task={task}
                   onEdit={handleEdit}
                   onDelete={onTaskDelete}
-                  onStatusChange={handleStatusChange}
+                  isDragging={draggedTaskId === task.id}
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
                 />
               ))}
               {statusTasks.length === 0 && (
-                <div className="text-center py-8 text-gray-400">No tasks in this status</div>
+                <div className="text-center py-8 text-gray-400 bg-gray-800/50 rounded-lg border border-gray-700 border-dashed">
+                  Drop tasks here or no tasks in this status
+                </div>
               )}
             </div>
           </div>

@@ -22,19 +22,20 @@
 3. [🏗️ Architecture Overview](#️-architecture-overview)
 4. [📁 Project Structure](#-project-structure)
 5. [🗃️ Data Model](#️-data-model)
-6. [📖 API Reference](#-api-reference)
-7. [✅ Validation Rules](#-validation-rules)
-8. [🚀 Local Development](#-local-development)
-9. [⚙️ Available Scripts](#️-available-scripts)
-10. [🔧 Environment Variables](#-environment-variables)
-11. [📝 Development Notes](#-development-notes--conventions)
-12. [🔮 Future Improvements](#-future-improvements)
+6. [🖱️ Drag & Drop System](#️-drag--drop-system)
+7. [📖 API Reference](#-api-reference)
+8. [✅ Validation Rules](#-validation-rules)
+9. [🚀 Local Development](#-local-development)
+10. [⚙️ Available Scripts](#️-available-scripts)
+11. [🔧 Environment Variables](#-environment-variables)
+12. [📝 Development Notes](#-development-notes--conventions)
 
 ---
 
 ## ✨ Features
 
 - 🎯 **Full CRUD Operations** - Create, read, update, delete tasks with real-time updates
+- 🖱️ **Drag & Drop Interface** - Intuitive task management with visual feedback and optimistic updates
 - 🌙 **Dark Theme UI** - Beautiful dark interface with Tailwind CSS v4
 - 📊 **Interactive Dashboard** - Statistics overview with task counts and recent activity
 - 🗄️ **SQLite + Prisma** - Type-safe database with automatic seeding from [DummyJSON](https://dummyjson.com/todos)
@@ -77,20 +78,21 @@ graph TB
     I[🌍 External DummyJSON] --> F
 ```
 
-| 🏷️ Layer              | 📋 Responsibility                              | 📁 Key Files                               |
-| --------------------- | ---------------------------------------------- | ------------------------------------------ |
-| **🌐 API Routes**     | HTTP boundary, serialization, error mapping    | `app/api/tasks/*.ts`                       |
-| **🗄️ Repository**     | Database access, seeding, domain mapping       | `app/tasks/repo.ts`                        |
-| **🎯 Domain Types**   | Shared contracts and interfaces                | `types/*.ts`                               |
-| **✅ Validation**     | Input sanitization and rule enforcement        | `lib/validation.ts`                        |
-| **📡 Client API**     | Browser fetch abstraction with error handling  | `lib/tasksApi.ts`                          |
-| **🧩 UI Components**  | Reusable presentational and interactive pieces | `components/`                              |
-| **🏗️ Infrastructure** | Database client, external services             | `lib/prisma.ts`, `lib/dummyJsonService.ts` |
+| 🏷️ Layer              | 📋 Responsibility                              | 📁 Key Files                                 |
+| --------------------- | ---------------------------------------------- | -------------------------------------------- |
+| **🌐 API Routes**     | HTTP boundary, serialization, error mapping    | `app/api/tasks/*.ts`                         |
+| **🗄️ Repository**     | Database access, seeding, domain mapping       | `app/tasks/repo.ts`                          |
+| **🖱️ Drag & Drop**    | State management, visual feedback, positioning | `useDragAndDrop.ts`, `dragAndDropService.ts` |
+| **🎯 Domain Types**   | Shared contracts and interfaces                | `types/*.ts`                                 |
+| **✅ Validation**     | Input sanitization and rule enforcement        | `lib/validation.ts`                          |
+| **📡 Client API**     | Browser fetch abstraction with error handling  | `lib/tasksApi.ts`                            |
+| **🧩 UI Components**  | Reusable presentational and interactive pieces | `components/`                                |
+| **🏗️ Infrastructure** | Database client, external services             | `lib/prisma.ts`, `lib/dummyJsonService.ts`   |
 
 **🔄 Data Flow:**
 
-- **Server Components** → Direct database access via repository
-- **Client Components** → API routes via `tasksApi` wrapper → Repository → Database
+- **🖥️ Server Components** → Direct database access via repository
+- **📱 Client Components** → API routes via `tasksApi` wrapper → Repository → Database
 
 ## 📁 Project Structure
 
@@ -124,8 +126,9 @@ graph TB
 │   │       ├── 📄 loading.tsx      # Task detail loading
 │   │       └── 📄 not-found.tsx    # 404 for invalid task IDs
 │   │
-│   └── 📂 hooks/                   # 🪝 Custom React hooks
-│       └── 📄 useTaskOperations.ts # Task mutation hooks
+│   └── 📂 hooks/                   # ⚡ Custom React hooks
+│       ├── 📄 useTaskOperations.ts # 🔧 Task mutation hooks
+│       └── 📄 useDragAndDrop.ts    # 🖱️ Drag & drop state management
 │
 ├── 📂 components/                   # 🧩 Reusable UI components
 │   ├── 📄 Sidebar.tsx              # 🧭 App navigation sidebar
@@ -136,7 +139,7 @@ graph TB
 │       ├── 📄 button.tsx           # 🔘 Button component
 │       ├── 📄 card.tsx             # 🃏 Card container
 │       ├── 📄 input.tsx            # ⌨️ Input fields
-│       ├── 📄 modal.tsx            # 🪟 Modal dialogs
+│       ├── 📄 modal.tsx            # 🗂️ Modal dialogs
 │       ├── 📄 toast.tsx            # 🍞 Toast notifications
 │       └── 📄 loading-overlay.tsx  # ⏳ Loading overlay
 │
@@ -144,6 +147,7 @@ graph TB
 │   ├── 📄 prisma.ts                # 🗄️ Prisma client singleton
 │   ├── 📄 dummyJsonService.ts      # 🌐 External API integration
 │   ├── 📄 tasksApi.ts              # 📡 Client-side API wrapper
+│   ├── 📄 dragAndDropService.ts    # 🖱️ Drag & drop utilities
 │   ├── 📄 utils.ts                 # 🛠️ Generic utilities
 │   └── 📄 validation.ts            # ✅ Input validation & sanitization
 │
@@ -188,15 +192,67 @@ model Task {
 
 **🔄 Data Transformations:**
 
-- **Database** → Uses `DateTime` objects for timestamps
-- **Domain** → Converts to ISO date strings for JSON serialization
-- **Client** → Receives type-safe `Task` interface via API
+- **💾 Database** → Uses `DateTime` objects for timestamps
+- **🎯 Domain** → Converts to ISO date strings for JSON serialization
+- **📱 Client** → Receives type-safe `Task` interface via API
 
 **🌱 Automatic Seeding:**
 
 - First database query triggers seeding from [DummyJSON API](https://dummyjson.com/todos)
 - Converts external todo format to internal task structure
 - Adds realistic random priorities, statuses, and due dates
+
+## 🖱️ Drag & Drop System
+
+The application features a sophisticated drag and drop system for intuitive task management:
+
+### ✨ Key Features
+
+- **🎯 Visual Feedback** - Real-time drop zone highlighting and custom drag images
+- **⚡ Optimistic Updates** - Instant UI updates with server sync in background
+- **🔝 Smart Positioning** - Tasks always appear at the top of the target status column
+- **🛡️ Error Recovery** - Automatic state restoration on failed operations
+- **🎨 Smooth Animations** - Rotation and scaling effects during drag operations
+
+### 🏗️ Architecture
+
+**⚡ Custom Hook (`useDragAndDrop.ts`):**
+
+- Manages all drag state (dragging, positions, visual feedback)
+- Handles optimistic local updates with server synchronization
+- Prevents race conditions and duplicate operations
+
+**🔧 Service Layer (`dragAndDropService.ts`):**
+
+- Pure utility functions for drag data serialization
+- Task positioning algorithms (top insertion logic)
+- Visual feedback class name generation
+- Server/local state merging strategies
+
+**🎨 Component Integration:**
+
+- `TaskCard.tsx` - Implements drag source with custom drag images
+- `TaskList.tsx` - Provides drop zones with visual feedback
+- Seamless integration with existing task operations
+
+### 🔄 Data Flow
+
+```
+🖱️ User drags task → Local state update → Visual feedback
+                  ↓
+🌐 API call (PUT) → Server update → State merge
+                  ↓
+✅ Optimistic UI preserved → Real-time sync completed
+```
+
+### 🎯 Usage
+
+Simply drag any task card to a different status column:
+
+- **📋 Todo** → **🔄 In Progress** → **✅ Completed**
+- Tasks automatically appear at the top of the target list
+- Visual feedback shows valid drop zones during drag
+- Instant updates with background server synchronization
 
 ## 📖 API Reference
 
@@ -305,9 +361,9 @@ DELETE /api/tasks/:id
 
 ### 📋 Prerequisites
 
-- **Node.js** 18+ (Next.js 15 requirement)
-- **Package Manager:** npm, pnpm, yarn, or bun
-- **Database:** None required! Uses SQLite file database
+- **🟢 Node.js** 18+ (Next.js 15 requirement)
+- **📦 Package Manager:** npm, pnpm, yarn, or bun
+- **💾 Database:** None required! Uses SQLite file database
 
 ### ⚡ Quick Start
 
@@ -402,14 +458,16 @@ DATABASE_URL="file:./prisma/dev.db"
 - **🌙 Dark theme** with consistent color palette
 - **⏳ Loading states** for all async operations
 - **🍞 Toast notifications** for user feedback
+- **🖱️ Drag & drop interactions** with visual feedback and optimistic updates
 - **📱 Responsive design** with mobile-first approach
 - **🎯 Semantic TypeScript interfaces** prevent DB leakage
 
 ### 🔄 Data Flow Best Practices
 
-- Server Components → Repository → Database
-- Client Components → API Routes → Repository → Database
-- Type safety enforced at all boundaries
+- 🖥️ Server Components → Repository → Database
+- 📱 Client Components → API Routes → Repository → Database
+- 🖱️ Drag & Drop → Optimistic Local State → API Sync → State Merge
+- 🔒 Type safety enforced at all boundaries
 
 ---
 
