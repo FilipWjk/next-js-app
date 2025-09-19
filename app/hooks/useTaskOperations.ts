@@ -6,7 +6,7 @@ import { useToast } from '@/components/ui/toast';
 import { tasksApi } from '@/lib/tasksApi';
 import { Task } from '@/types/task';
 
-type OperationType = 'create' | 'update' | 'delete' | 'toggle';
+type OperationType = 'create' | 'update' | 'delete' | 'toggle' | 'priority';
 
 interface UseTaskOperationsOptions {
   onSuccess?: {
@@ -96,11 +96,29 @@ export function useTaskOperations(options: UseTaskOperationsOptions = {}) {
     }
   };
 
+  const changePriority = async (taskId: string, newPriority: Task['priority']) => {
+    try {
+      setBusy('priority');
+      const updated = await tasksApi.update(taskId, { priority: newPriority });
+      toast.success(`Priority changed to ${newPriority}`);
+      options.onSuccess?.update?.(updated);
+      router.refresh();
+      return updated;
+    } catch (error) {
+      console.error('Change priority failed', error);
+      toast.error('Failed to change priority');
+      throw error;
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return {
     busy,
     createTask,
     updateTask,
     deleteTask,
     toggleTaskStatus,
+    changePriority,
   };
 }

@@ -10,7 +10,7 @@ export function Card({ className, ...props }: CardProps) {
   return (
     <div
       className={mergeClasses(
-        'rounded-xl border border-gray-700 bg-gray-800 text-white shadow-lg',
+        'rounded-lg border border-gray-700 bg-gray-800 shadow-sm hover:shadow-lg hover:border-gray-600 transition-all duration-200',
         className,
       )}
       {...props}
@@ -18,17 +18,17 @@ export function Card({ className, ...props }: CardProps) {
   );
 }
 export function CardHeader({ className, ...props }: CardHeaderProps) {
-  return <div className={mergeClasses('flex flex-col space-y-1.5 p-6', className)} {...props} />;
+  return <div className={mergeClasses('flex flex-col space-y-1.5 p-4', className)} {...props} />;
 }
 
 export function CardTitle({ className, ...props }: CardTitleProps) {
   return (
     <h3
-      className={mergeClasses('font-semibold text-2xl leading-none tracking-tight text-white', className)}
+      className={mergeClasses('font-semibold text-lg leading-none tracking-tight text-white', className)}
       {...props}
     />
   );
 }
 export function CardContent({ className, ...props }: CardContentProps) {
-  return <div className={mergeClasses('p-6 pt-0', className)} {...props} />;
+  return <div className={mergeClasses('p-4 pt-0', className)} {...props} />;
 }
