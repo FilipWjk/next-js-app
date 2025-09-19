@@ -1,24 +1,14 @@
-import { Task } from '@/types/task';
 import { listTasks } from './repo';
 import { TaskListSSR } from './components/TaskListSSR';
 
 export const dynamic = 'force-dynamic';
 
-async function getTasks(): Promise<Task[]> {
+export default async function TasksPage() {
   try {
-    const tasks: Task[] = await listTasks();
-    return tasks;
-  } catch (error) {
-    console.error('Error fetching tasks for tasks page:', error);
-    return [];
+    const tasks = await listTasks();
+    return <TaskListSSR initialTasks={tasks} />;
+  } catch (err) {
+    console.error('Error fetching tasks for tasks page:', err);
+    return <TaskListSSR initialTasks={[]} />;
   }
-}
-
-async function TasksContent() {
-  const tasks = await getTasks();
-  return <TaskListSSR initialTasks={tasks} />;
-}
-
-export default function TasksPage() {
-  return <TasksContent />;
 }

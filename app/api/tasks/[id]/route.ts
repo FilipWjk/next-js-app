@@ -13,7 +13,7 @@ import { Task } from '@/types/task';
 
 // * GET /api/tasks/[id] - Get a specific task
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse<ApiSuccessResponse<Task> | ApiErrorResponse>> {
   try {
@@ -140,7 +140,7 @@ export async function PUT(
 
 // * DELETE /api/tasks/[id] - Delete a task
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse<DeleteTaskResponse | ApiErrorResponse>> {
   try {

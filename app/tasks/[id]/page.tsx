@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Task } from '@/types/task';
 import Link from 'next/link';
 import { getTaskById } from '../repo';
 import ClientActions from './ClientActions';
+import { formatDate } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,8 +38,6 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
     medium: 'bg-yellow-700 text-yellow-200',
     high: 'bg-red-700 text-red-200',
   };
-
-  const formatDate = (date: string) => new Date(date).toLocaleDateString();
 
   return (
     <div className="space-y-6">

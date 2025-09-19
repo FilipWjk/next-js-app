@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { TaskList } from '../../components/TaskList';
+import { TaskList } from '@/components/TaskList';
 import { Task } from '@/types/task';
-import { LoadingOverlay } from '../../components/ui/loading-overlay';
+import { LoadingOverlay } from '@/components/ui/loading-overlay';
 import { useTaskOperations } from '../../hooks/useTaskOperations';
 
 interface TaskListSSRProps {
@@ -53,7 +53,7 @@ export function TaskListSSR({ initialTasks }: TaskListSSRProps) {
             ? 'Updating task...'
             : busy === 'delete'
             ? 'Deleting task...'
-            : ''
+            : undefined
         }
       />
       <TaskList

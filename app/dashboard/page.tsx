@@ -1,21 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Task } from '@/types/task';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { listTasks } from '@/app/tasks/repo';
 
 export const dynamic = 'force-dynamic';
 
-async function getTasks(): Promise<Task[]> {
+async function DashboardStats() {
+  let tasks = [] as Awaited<ReturnType<typeof listTasks>>;
   try {
-    const tasks: Task[] = await listTasks();
-    return tasks;
+    tasks = await listTasks();
   } catch (error) {
     console.error('Error fetching tasks:', error);
-    return [];
   }
-}
-
-async function DashboardStats() {
-  const tasks = await getTasks();
 
   const stats = {
     total: tasks.length,

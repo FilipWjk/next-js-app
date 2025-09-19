@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '../../components/ui/button';
-import { LoadingOverlay } from '../../components/ui/loading-overlay';
+import { Button } from '@/components/ui/button';
+import { LoadingOverlay } from '@/components/ui/loading-overlay';
 import { useTaskOperations } from '../../hooks/useTaskOperations';
 import { Task } from '@/types/task';
 
@@ -17,7 +17,9 @@ export default function ClientActions({ task }: { task: Task }) {
     <div className="relative">
       <LoadingOverlay
         isVisible={!!busy}
-        message={busy === 'toggle' ? 'Updating status...' : busy === 'delete' ? 'Deleting task...' : ''}
+        message={
+          busy === 'toggle' ? 'Updating status...' : busy === 'delete' ? 'Deleting task...' : undefined
+        }
       />
       <div className="flex gap-2">
         <Button
