@@ -2,16 +2,8 @@
 
 import { createContext, useCallback, useContext, useMemo, useState, ReactNode } from 'react';
 
-type Toast = {
-  id: string;
-  type: 'success' | 'error';
-  message: string;
-};
-
-type ToastContextType = {
-  success: (message: string) => void;
-  error: (message: string) => void;
-};
+type Toast = { id: string; type: 'success' | 'error'; message: string };
+type ToastContextType = { success: (message: string) => void; error: (message: string) => void };
 
 const ToastContext = createContext<ToastContextType | null>(null);
 
@@ -20,16 +12,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const push = useCallback((type: Toast['type'], message: string) => {
     const id = `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-    const toast: Toast = { id, type, message };
-    setToasts((t) => [...t, toast]);
+    setToasts((t) => [...t, { id, type, message }]);
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 2800);
   }, []);
 
   const api = useMemo<ToastContextType>(
-    () => ({
-      success: (message) => push('success', message),
-      error: (message) => push('error', message),
-    }),
+    () => ({ success: (m) => push('success', m), error: (m) => push('error', m) }),
     [push],
   );
 
@@ -58,8 +46,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
 export function useToast() {
   const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within <ToastProvider />');
-  }
+  if (!context) throw new Error('useToast must be used within <ToastProvider />');
   return context;
 }

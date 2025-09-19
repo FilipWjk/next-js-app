@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { TaskCard } from './TaskCard';
+import { TaskCard } from '@/components/TaskCard';
 import { Task } from '@/types/task';
-import { TaskForm } from './TaskForm';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { TaskForm } from '@/components/TaskForm';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface TaskListProps {
   tasks: Task[];
@@ -21,14 +21,11 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
   const [statusFilter, setStatusFilter] = useState<Task['status'] | 'all'>('all');
   const [priorityFilter, setPriorityFilter] = useState<Task['priority'] | 'all'>('all');
 
-  // * Filter tasks based on search and filters
   const filteredTasks = tasks.filter((task) => {
-    const matchesSearch =
-      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const s = searchTerm.toLowerCase();
+    const matchesSearch = task.title.toLowerCase().includes(s) || task.description.toLowerCase().includes(s);
     const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
     const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
-
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
@@ -39,11 +36,7 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
 
   const handleFormSubmit = async (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
     if (editingTask) {
-      await onTaskUpdate({
-        ...editingTask,
-        ...taskData,
-        updatedAt: new Date().toISOString(),
-      });
+      await onTaskUpdate({ ...editingTask, ...taskData, updatedAt: new Date().toISOString() });
     } else {
       await onTaskCreate(taskData);
     }
@@ -52,13 +45,7 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
 
   const handleStatusChange = async (taskId: string, status: Task['status']) => {
     const task = tasks.find((t) => t.id === taskId);
-    if (task) {
-      await onTaskUpdate({
-        ...task,
-        status,
-        updatedAt: new Date().toISOString(),
-      });
-    }
+    if (task) await onTaskUpdate({ ...task, status, updatedAt: new Date().toISOString() });
   };
 
   const handleCloseForm = () => {
@@ -66,16 +53,14 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
     setEditingTask(undefined);
   };
 
-  // * Group tasks by status for kanban-style display
   const tasksByStatus = {
-    todo: filteredTasks.filter((task) => task.status === 'todo'),
-    'in-progress': filteredTasks.filter((task) => task.status === 'in-progress'),
-    completed: filteredTasks.filter((task) => task.status === 'completed'),
-  };
+    todo: filteredTasks.filter((t) => t.status === 'todo'),
+    'in-progress': filteredTasks.filter((t) => t.status === 'in-progress'),
+    completed: filteredTasks.filter((t) => t.status === 'completed'),
+  } as const;
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold text-white">Tasks</h1>
         <Button
@@ -85,8 +70,6 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
           Create New Task
         </Button>
       </div>
-
-      {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <Input
           placeholder="Search tasks..."
@@ -94,7 +77,6 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
           onChange={(e) => setSearchTerm(e.target.value)}
           className="sm:max-w-xs"
         />
-
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as Task['status'] | 'all')}
@@ -105,7 +87,6 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
           <option value="in-progress">In Progress</option>
           <option value="completed">Completed</option>
         </select>
-
         <select
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value as Task['priority'] | 'all')}
@@ -117,8 +98,6 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
           <option value="high">High</option>
         </select>
       </div>
-
-      {/* Kanban Board */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {Object.entries(tasksByStatus).map(([status, statusTasks]) => (
           <div key={status} className="space-y-4">
@@ -142,8 +121,6 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
           </div>
         ))}
       </div>
-
-      {/* Task Form Modal */}
       <TaskForm
         isOpen={isFormOpen}
         onClose={handleCloseForm}

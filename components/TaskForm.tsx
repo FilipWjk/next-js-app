@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Modal } from './ui/modal';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Modal } from '@/components/ui/modal';
 import { Task } from '@/types/task';
 import { CreateTaskRequest, UpdateTaskRequest } from '@/types/api';
 import { tasksApi, ApiError } from '@/lib/tasksApi';
@@ -20,35 +20,26 @@ interface FormErrors {
 }
 
 export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormProps) {
-  const [formData, setFormData] = useState<{
-    title: string;
-    description: string;
-    status: Task['status'];
-    priority: Task['priority'];
-    dueDate: string;
-  }>({
+  const [formData, setFormData] = useState({
     title: '',
     description: '',
-    status: 'todo',
-    priority: 'medium',
+    status: 'todo' as Task['status'],
+    priority: 'medium' as Task['priority'],
     dueDate: '',
   });
-
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [generalError, setGeneralError] = useState<string>('');
+  const [generalError, setGeneralError] = useState('');
 
   useEffect(() => {
     const dateOnly = (d?: string) => (d ? d.slice(0, 10) : '');
     setFormData({
       title: initialTask?.title || '',
       description: initialTask?.description || '',
-      status: initialTask?.status || ('todo' as Task['status']),
-      priority: initialTask?.priority || ('medium' as Task['priority']),
+      status: initialTask?.status || 'todo',
+      priority: initialTask?.priority || 'medium',
       dueDate: dateOnly(initialTask?.dueDate),
     });
-
-    // * Clear errors when form opens/closes or initialTask changes
     setErrors({});
     setGeneralError('');
   }, [initialTask, isOpen]);
@@ -59,7 +50,6 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
   };
 
   const handleApiError = (error: ApiError) => {
-    // * Handle validation errors
     if (error.errors && Array.isArray(error.errors)) {
       const validationErrors: FormErrors = {};
       error.errors.forEach((err: any) => {
@@ -67,7 +57,6 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
       });
       setErrors(validationErrors);
     } else {
-      // * Handle general errors
       setGeneralError(error.message || 'An unexpected error occurred');
     }
   };
@@ -75,12 +64,10 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearErrors();
-
     if (!onSubmit) return;
 
     try {
       setSubmitting(true);
-
       const requestData: CreateTaskRequest | UpdateTaskRequest = {
         title: formData.title,
         description: formData.description,
@@ -88,34 +75,15 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
         priority: formData.priority,
         dueDate: formData.dueDate || undefined,
       };
-
-      let result: Task;
-
-      if (initialTask) {
-        result = await tasksApi.update(initialTask.id, requestData);
-      } else {
-        result = await tasksApi.create(requestData as CreateTaskRequest);
-      }
-
-      // ? Success
+      const result = initialTask
+        ? await tasksApi.update(initialTask.id, requestData)
+        : await tasksApi.create(requestData as CreateTaskRequest);
       await onSubmit(result);
       onClose();
-
-      // * Reset form
-      setFormData({
-        title: '',
-        description: '',
-        status: 'todo',
-        priority: 'medium',
-        dueDate: '',
-      });
+      setFormData({ title: '', description: '', status: 'todo', priority: 'medium', dueDate: '' });
     } catch (error) {
-      if (error instanceof ApiError) {
-        handleApiError(error);
-      } else {
-        console.error('Unexpected error:', error);
-        setGeneralError('Network error. Please check your connection and try again.');
-      }
+      if (error instanceof ApiError) handleApiError(error);
+      else setGeneralError('Network error. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -123,12 +91,11 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-
     if (errors[field]) {
       setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
+        const next = { ...prev };
+        delete next[field];
+        return next;
       });
     }
   };
@@ -148,7 +115,6 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
             {generalError}
           </div>
         )}
-
         <div>
           <label className="block text-sm font-medium mb-1 text-white">
             Title <span className="text-red-400">*</span>
@@ -169,7 +135,6 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
             </p>
           )}
         </div>
-
         <div>
           <label htmlFor="description" className="block text-sm font-medium mb-1 text-white">
             Description <span className="text-red-400">*</span>
@@ -192,7 +157,6 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
             </p>
           )}
         </div>
-
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="status" className="block text-sm font-medium mb-1 text-white">
@@ -219,7 +183,6 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
               </p>
             )}
           </div>
-
           <div>
             <label htmlFor="priority" className="block text-sm font-medium mb-1 text-white">
               Priority <span className="text-red-400">*</span>
@@ -246,7 +209,6 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
             )}
           </div>
         </div>
-
         <div>
           <label htmlFor="dueDate" className="block text-sm font-medium mb-1 text-white">
             Due Date
@@ -266,7 +228,6 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
             </p>
           )}
         </div>
-
         <div className="flex justify-end gap-2 pt-4">
           <Button
             type="button"

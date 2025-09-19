@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { mergeClasses } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { Edit, Trash2, Eye } from 'lucide-react';
@@ -18,14 +18,11 @@ const priorityColors = {
   low: 'border-l-gray-500',
   medium: 'border-l-yellow-500',
   high: 'border-l-red-500',
-};
+} as const;
 
 export function TaskCard({ task, onEdit, onDelete, onStatusChange }: TaskCardProps) {
   const router = useRouter();
-
-  const handleViewDetails = () => {
-    router.push(`/tasks/${task.id}`);
-  };
+  const handleViewDetails = () => router.push(`/tasks/${task.id}`);
 
   return (
     <Card
@@ -35,7 +32,6 @@ export function TaskCard({ task, onEdit, onDelete, onStatusChange }: TaskCardPro
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <CardTitle className="text-lg">{task.title}</CardTitle>
-            <div className="flex items-center gap-2"></div>
           </div>
           <div className="flex gap-1">
             {onEdit && (
@@ -69,7 +65,6 @@ export function TaskCard({ task, onEdit, onDelete, onStatusChange }: TaskCardPro
             Due: {new Date(task.dueDate).toLocaleDateString()}
           </p>
         )}
-
         <div className="flex gap-2 mb-3">
           <Button
             variant="outline"
@@ -81,7 +76,6 @@ export function TaskCard({ task, onEdit, onDelete, onStatusChange }: TaskCardPro
             <span className="ml-2">View Details</span>
           </Button>
         </div>
-
         {onStatusChange && (
           <div className="flex gap-2">
             <Button

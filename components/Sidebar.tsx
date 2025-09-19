@@ -11,13 +11,11 @@ const navigation = [
 
 export function Sidebar() {
   const pathname = usePathname();
-
   return (
     <div className="flex h-full w-64 flex-col bg-gray-900 border-r border-gray-700">
       <div className="flex h-16 items-center px-6">
         <h1 className="text-xl font-bold text-white">Task Manager</h1>
       </div>
-
       <nav className="flex-1 space-y-1 px-3 py-4">
         {navigation.map((item) => {
           const isActive = pathname === item.href;
@@ -35,7 +33,6 @@ export function Sidebar() {
           );
         })}
       </nav>
-
       <div className="p-4 border-t border-gray-700">
         <div className="flex items-center">
           <div className="ml-3">

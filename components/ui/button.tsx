@@ -17,13 +17,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       outline:
         'border border-gray-600 bg-transparent shadow-sm hover:bg-gray-700 hover:text-white text-gray-300',
       ghost: 'hover:bg-gray-700 hover:text-white text-gray-300',
-    };
+    } as const;
 
     const sizes = {
       default: 'h-9 px-4 py-2',
       sm: 'h-8 rounded-md px-3 text-xs',
       icon: 'h-9 w-9',
-    };
+    } as const;
 
     return (
       <button

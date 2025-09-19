@@ -2,11 +2,8 @@ import { HTMLAttributes } from 'react';
 import { mergeClasses } from '@/lib/utils';
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {}
-
 export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {}
-
 export interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
-
 export interface CardContentProps extends HTMLAttributes<HTMLDivElement> {}
 
 export function Card({ className, ...props }: CardProps) {

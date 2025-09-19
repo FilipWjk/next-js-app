@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import { mergeClasses } from '@/lib/utils';
-import { Button } from './button';
+import { Button } from '@/components/ui/button';
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,20 +14,15 @@ interface ModalProps {
 
 export function Modal({ isOpen, onClose, title, children, className }: ModalProps) {
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop - clicking closes the modal */}
       <div className="absolute inset-0 bg-black/70" onClick={onClose} />
-
-      {/* Modal Content */}
       <div
         className={mergeClasses(
           'relative bg-gray-800 rounded-lg shadow-lg border border-gray-700 max-w-md w-full mx-4 max-h-[90vh] overflow-auto',
           className,
         )}
       >
-        {/* Header with title and close button */}
         {title && (
           <div className="flex items-center justify-between p-6 border-b border-gray-700">
             <h2 className="text-lg font-semibold text-white">{title}</h2>
@@ -42,8 +37,6 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
             </Button>
           </div>
         )}
-
-        {/* Modal Content */}
         <div className="p-6">{children}</div>
       </div>
     </div>
