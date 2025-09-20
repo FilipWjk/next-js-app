@@ -15,6 +15,8 @@
 
 </div>
 
+> 🖼️ **Want a quick preview?** Check out the [Screenshots section](#-screenshots) below to see the application in action without needing to clone or install anything!
+
 ## 📑 Table of Contents
 
 1. [✨ Features](#-features)
@@ -253,6 +255,80 @@ Simply drag any task card to a different status column:
 - Tasks automatically appear at the top of the target list
 - Visual feedback shows valid drop zones during drag
 - Instant updates with background server synchronization
+
+## 🖼 Screenshots
+
+### Dashboard Overview
+
+<details>
+<summary><strong>📊 Main Dashboard</strong></summary>
+
+![Dashboard Interface](screenshots/dashboard.png)
+_Main dashboard showing task statistics, recent tasks, and upcoming deadlines with dark theme UI_
+
+</details>
+
+### Task Management
+
+<details>
+<summary><strong>📋 Tasks Overview</strong></summary>
+
+![Tasks Page](screenshots/tasks.png)
+_Complete task management interface with drag-and-drop columns for Todo, In Progress, and Completed tasks_
+
+</details>
+
+<details>
+<summary><strong>📝 Task Details</strong></summary>
+
+![Task Details](screenshots/task_details.png)
+_Detailed view of individual tasks with status, priority, description, and action buttons_
+
+</details>
+
+<details>
+<summary><strong>✏️ Edit Task</strong></summary>
+
+![Edit Task Form](screenshots/edit_task.png)
+_Task editing interface with form validation and real-time updates_
+
+</details>
+
+### Interactive Features
+
+<details>
+<summary><strong>🖱️ Drag & Drop</strong></summary>
+
+![Drag Drop Overlay](screenshots/task_drag_overlay.png)
+_Visual feedback during drag and drop operations with highlighted drop zones_
+
+</details>
+
+<details>
+<summary><strong>🔄 Navigation Loading</strong></summary>
+
+![Navigation Loading](screenshots/navigation_loading.png)
+_Instant loading feedback when navigating between pages with progress indicator_
+
+</details>
+
+<details>
+<summary><strong>⚡ Update Loading</strong></summary>
+
+![Update Task Loading](screenshots/update_task_loading.png)
+_Loading overlay shown immediately when updating task information_
+
+</details>
+
+### Error Handling
+
+<details>
+<summary><strong>❌ Task Not Found</strong></summary>
+
+![Task Not Found](screenshots/task_not_found.png)
+_User-friendly error page for invalid or deleted tasks with navigation options_
+
+</details>
 
 ## 📖 API Reference
 
