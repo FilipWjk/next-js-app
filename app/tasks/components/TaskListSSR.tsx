@@ -13,7 +13,7 @@ interface TaskListSSRProps {
 export function TaskListSSR({ initialTasks }: TaskListSSRProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
-  const { busy, createTask, updateTask, deleteTask } = useTaskOperations({
+  const { busy, createTask, updateTask, deleteTask, startLoading } = useTaskOperations({
     onSuccess: {
       create: (newTask) => setTasks((prev) => [newTask, ...prev]),
       update: (updatedTask) =>
@@ -42,6 +42,10 @@ export function TaskListSSR({ initialTasks }: TaskListSSRProps) {
     await createTask(taskData);
   };
 
+  const handleLoadingStart = () => {
+    startLoading('update');
+  };
+
   return (
     <div className="space-y-6 relative">
       <LoadingOverlay
@@ -61,6 +65,7 @@ export function TaskListSSR({ initialTasks }: TaskListSSRProps) {
         onTaskUpdate={handleTaskUpdate}
         onTaskDelete={handleTaskDelete}
         onTaskCreate={handleTaskCreate}
+        onLoadingStart={handleLoadingStart}
       />
     </div>
   );

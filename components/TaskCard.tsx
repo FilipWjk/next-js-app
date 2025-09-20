@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { mergeClasses } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { useNavigationLoading } from '@/contexts/NavigationLoadingContext';
 import { Edit, Trash2, Eye, Calendar, Clock, AlertCircle, Circle, CheckCircle } from 'lucide-react';
 import { Task } from '@/types/task';
 import { DragAndDropService } from '@/lib/dragAndDropService';
@@ -70,7 +71,12 @@ export function TaskCard({
   onDragEnd,
 }: TaskCardProps) {
   const router = useRouter();
-  const handleViewDetails = () => router.push(`/tasks/${task.id}`);
+  const { startNavigation } = useNavigationLoading();
+
+  const handleViewDetails = () => {
+    startNavigation();
+    router.push(`/tasks/${task.id}`);
+  };
 
   const priority = priorityConfig[task.priority];
   const status = statusConfig[task.status];

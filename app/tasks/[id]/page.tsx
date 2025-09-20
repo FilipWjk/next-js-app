@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Task } from '@/types/task';
-import Link from 'next/link';
+import { BackButton } from '@/components/BackButton';
 import { getTaskById } from '../repo';
 import ClientActions from './ClientActions';
 import { formatDate } from '@/lib/utils';
@@ -42,11 +42,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/tasks">
-          <Button variant="outline" className="cursor-pointer">
-            ← Back to Tasks
-          </Button>
-        </Link>
+        <BackButton href="/tasks">← Back to Tasks</BackButton>
         <h1 className="text-2xl font-bold text-white">Task Details</h1>
       </div>
 

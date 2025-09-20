@@ -13,13 +13,14 @@ interface TaskFormProps {
   onClose: () => void;
   onSubmit?: (task: Task) => void | Promise<void>;
   initialTask?: Task;
+  onLoadingStart?: () => void;
 }
 
 interface FormErrors {
   [key: string]: string;
 }
 
-export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormProps) {
+export function TaskForm({ isOpen, onClose, onSubmit, initialTask, onLoadingStart }: TaskFormProps) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -68,6 +69,11 @@ export function TaskForm({ isOpen, onClose, onSubmit, initialTask }: TaskFormPro
 
     try {
       setSubmitting(true);
+      // Call loading start callback immediately for updates
+      if (initialTask && onLoadingStart) {
+        onLoadingStart();
+      }
+
       const requestData: CreateTaskRequest | UpdateTaskRequest = {
         title: formData.title,
         description: formData.description,

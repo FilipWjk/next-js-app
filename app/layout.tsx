@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Sidebar } from '@/components/Sidebar';
 import { ToastProvider } from '@/components/ui/toast';
+import { NavigationLoadingProvider } from '@/contexts/NavigationLoadingContext';
+import { GlobalNavigationLoading } from '@/components/GlobalNavigationLoading';
 import TopProgress from '@/app/top-progress';
 
 const geistSans = Geist({
@@ -28,15 +30,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-white`}>
-        <ToastProvider>
-          <TopProgress />
-          <div className="flex h-screen bg-gray-900">
-            <Sidebar />
-            <main className="flex-1 overflow-auto bg-gray-800">
-              <div className="p-8">{children}</div>
-            </main>
-          </div>
-        </ToastProvider>
+        <NavigationLoadingProvider>
+          <ToastProvider>
+            <TopProgress />
+            <GlobalNavigationLoading />
+            <div className="flex h-screen bg-gray-900">
+              <Sidebar />
+              <main className="flex-1 overflow-auto bg-gray-800">
+                <div className="p-8">{children}</div>
+              </main>
+            </div>
+          </ToastProvider>
+        </NavigationLoadingProvider>
       </body>
     </html>
   );

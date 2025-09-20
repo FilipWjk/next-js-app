@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useNavigationLoading } from '@/contexts/NavigationLoadingContext';
 import { mergeClasses } from '@/lib/utils';
 
 const navigation = [
@@ -11,6 +12,17 @@ const navigation = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { startNavigation } = useNavigationLoading();
+
+  const handleNavigation = (href: string) => {
+    // ! Only start loading if we're navigating to a different page
+    if (pathname !== href) {
+      startNavigation();
+      router.push(href);
+    }
+  };
+
   return (
     <div className="flex h-full w-64 flex-col bg-gray-900 border-r border-gray-700">
       <div className="flex h-16 items-center px-6">
@@ -20,16 +32,16 @@ export function Sidebar() {
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <Link
+            <button
               key={item.name}
-              href={item.href}
+              onClick={() => handleNavigation(item.href)}
               className={mergeClasses(
-                'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors',
+                'w-full text-left group cursor-pointer flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors',
                 isActive ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white',
               )}
             >
               {item.name}
-            </Link>
+            </button>
           );
         })}
       </nav>

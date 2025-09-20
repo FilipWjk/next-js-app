@@ -1,16 +1,13 @@
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { BackButton } from '@/components/BackButton';
 
 export default function NotFound() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/tasks">
-          <Button variant="outline" className="cursor-pointer">
-            ← Back to Tasks
-          </Button>
-        </Link>
+        <BackButton href="/tasks">← Back to Tasks</BackButton>
         <h1 className="text-2xl font-bold text-white">Task Not Found</h1>
       </div>
       <Card>

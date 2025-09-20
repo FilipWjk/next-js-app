@@ -113,6 +113,14 @@ export function useTaskOperations(options: UseTaskOperationsOptions = {}) {
     }
   };
 
+  const startLoading = (operation: OperationType) => {
+    setBusy(operation);
+  };
+
+  const stopLoading = () => {
+    setBusy(null);
+  };
+
   return {
     busy,
     createTask,
@@ -120,5 +128,7 @@ export function useTaskOperations(options: UseTaskOperationsOptions = {}) {
     deleteTask,
     toggleTaskStatus,
     changePriority,
+    startLoading,
+    stopLoading,
   };
 }

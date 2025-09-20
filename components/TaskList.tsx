@@ -14,9 +14,10 @@ interface TaskListProps {
   onTaskUpdate: (task: Task) => void | Promise<void>;
   onTaskDelete: (taskId: string) => void | Promise<void>;
   onTaskCreate: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void | Promise<void>;
+  onLoadingStart?: () => void;
 }
 
-export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: TaskListProps) {
+export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate, onLoadingStart }: TaskListProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
@@ -148,6 +149,7 @@ export function TaskList({ tasks, onTaskUpdate, onTaskDelete, onTaskCreate }: Ta
         onClose={handleCloseForm}
         onSubmit={handleFormSubmit}
         initialTask={editingTask}
+        onLoadingStart={onLoadingStart}
       />
     </div>
   );
